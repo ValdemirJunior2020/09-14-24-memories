@@ -29,3 +29,4 @@ const Input = ({ name, handleChange, label, half, autoFocus, type, handleShowPas
 );
 
 export default Input;
+
