@@ -30,12 +30,12 @@ export const getPost = async (req, res) => {
 export const createPost = async (req, res) => {
     const { title, message, selectedFile, creator, tags } = req.body;
 
-    const newPostMessage = new PostMessage({ title, message, selectedFile, creator, tags })
+    const newPostMessage = new PostMessage({ title, message, selectedFile, creator, tags });
 
     try {
         await newPostMessage.save();
 
-        res.status(201).json(newPostMessage );
+        res.status(201).json(newPostMessage);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
@@ -59,9 +59,13 @@ export const deletePost = async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    await PostMessage.findByIdAndRemove(id);
-
-    res.json({ message: "Post deleted successfully." });
+    try {
+        await PostMessage.findByIdAndDelete(id);
+        res.json({ message: "Post deleted successfully." });
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        res.status(500).json({ message: error.message });
+    }
 }
 
 export const likePost = async (req, res) => {
@@ -75,6 +79,5 @@ export const likePost = async (req, res) => {
     
     res.json(updatedPost);
 }
-
 
 export default router;
